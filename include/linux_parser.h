@@ -4,6 +4,7 @@
 #include <fstream>
 #include <regex>
 #include <string>
+#include <unordered_map>
 
 namespace LinuxParser {
 // Paths
@@ -40,6 +41,7 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
+
 std::vector<std::string> CpuUtilization();
 long Jiffies();
 long ActiveJiffies();
@@ -48,8 +50,10 @@ long IdleJiffies();
 
 // Processes
 std::string Command(int pid);
+float CppUtililization(int pid);
 std::string Ram(int pid);
 std::string Uid(int pid);
+std::unordered_map<int, std::string> UserIdMap();
 std::string User(int pid);
 long int UpTime(int pid);
 };  // namespace LinuxParser
