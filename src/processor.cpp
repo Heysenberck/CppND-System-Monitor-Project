@@ -14,8 +14,6 @@ using namespace LinuxParser;
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
-  prevCpuTimeUnits_ = currCpuTimeUnits_;
-
   vector<string> cpuTimeUnits = LinuxParser::CpuUtilization();
 
   float user       = std::stoi(cpuTimeUnits[CPUStates::kUser_]);
