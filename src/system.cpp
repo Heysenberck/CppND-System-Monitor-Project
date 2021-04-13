@@ -38,6 +38,7 @@ vector<Process>& System::Processes() {
     process.Ram(LinuxParser::Ram(id));
     process.User(usr);
     process.UpTime(LinuxParser::UpTime(id));
+    process.CpuUtilization(LinuxParser::CpuUtililization(id));
     processes_.push_back(process);
   }
   return processes_;
