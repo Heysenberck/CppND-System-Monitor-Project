@@ -7,31 +7,15 @@ using std::vector;
 
 class Processor {
  public:
-  float Utilization();  // TODO: See src/processor.cpp
+  float Utilization();
 
-  // TODO: Declare any necessary private members
  private:
-  struct cpuTimeUnits {
-    long user{0};
-    long nice{0};
-    long system{0};
-    long idle{0};
-    long iowait{0};
-    long irq{0};
-    long softirq{0};
-    long steal{0};
-    long guest{0};
-    long guest_nice{0};
-  };
-  cpuTimeUnits prevCpuTimeUnits_;
-  cpuTimeUnits currCpuTimeUnits_;
-
-  float prevIdle_;
-  float currIdle_;
-  float prevNonIdle_;
-  float currNonIdle_;
-  float prevTotal_;
-  float currTotal_;
+  float prevIdle_{0.f};
+  float currIdle_{0.f};
+  float prevNonIdle_{0.f};
+  float currNonIdle_{0.f};
+  float prevTotal_{0.f};
+  float currTotal_{0.f};
 };
 
 #endif
