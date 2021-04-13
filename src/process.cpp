@@ -18,10 +18,12 @@ int Process::Pid() const {
   return pid_;
 }
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() const {
+void Process::CpuUtilization(float utilization) {
+  cpuUtilization_ = utilization;
+}
 
-  return 0;
+float Process::CpuUtilization() const {
+  return cpuUtilization_;
 }
 
 void Process::Command(const std::string &cmd) {
