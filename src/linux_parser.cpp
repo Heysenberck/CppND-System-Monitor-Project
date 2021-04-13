@@ -295,16 +295,15 @@ long LinuxParser::UpTime(int pid) {
   return uptime;
 }
 
-float LinuxParser::CppUtililization(int pid) {
+float LinuxParser::CpuUtililization(int pid) {
   string line;
   const string pidStr = std::to_string(pid);
   vector<string> val;  // [14=utime, 15=stime= 16=cutime, 17=cstime]
-  long totalTime = 0;
-  val.clear();
+  float totalTime = 0.f;
   std::ifstream filestream(LinuxParser::kProcDirectory + pidStr + LinuxParser::kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
-      for (int i = 0; i < 18; i++) {
+      for (int i = 0; i < 22; i++) {
         std::istringstream linestream(line);
         string tempVal;
         linestream >> tempVal;
@@ -313,10 +312,12 @@ float LinuxParser::CppUtililization(int pid) {
     }
   }
   for (int i = 14; i < 18; i++) {
-    long tempTime = stol(val[i]) / sysconf(_SC_CLK_TCK);
-    totalTime += tempTime;
+    totalTime += stol(val[i]);
   }
-  long divide = totalTime / LinuxParser::UpTime(pid);
-  float CpuUtilization_ = (float) divide;
-  return CpuUtilization_;
+  totalTime = totalTime/sysconf(_SC_CLK_TCK);
+  float seconds = LinuxParser::UpTime() - (stol(val[21])/sysconf(_SC_CLK_TCK));
+  //std::cout << "Uptime: " << uptime << std::endl;
+//  float divide = totalTime / LinuxParser::UpTime();
+  return 100.0 * (totalTime / seconds);
+  //return CpuUtilization_;
 }
