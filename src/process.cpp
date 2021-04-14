@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "process.h"
+#include "linux_parser.h"
 
 using std::string;
 using std::to_string;
@@ -19,6 +20,10 @@ int Process::Pid() const {
 }
 
 void Process::CpuUtilization(float utilization) {
+  long total_time = LinuxParser::ActiveJiffies(pid_);
+  long seconds    = UpTime();
+  float total_time_seconds = total_time / sysconf(_SC_CLK_TCK);
+  utilization     = total_time_seconds / seconds;
   cpuUtilization_ = utilization;
 }
 
@@ -58,8 +63,6 @@ long int Process::UpTime() const {
   return uptime_;
 }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
 bool Process::operator<(Process const& a) const {
-  return ram_ < a.ram_;
+  return cpuUtilization_ > a.CpuUtilization();
 }
