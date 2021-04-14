@@ -96,15 +96,33 @@ long LinuxParser::Jiffies() {
   return 0; 
 }
 
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+long LinuxParser::ActiveJiffies(int pid) {
+  vector<string> values;  // [14=utime, 15=stime= 16=cutime, 17=cstime]
+  long totalTime = 0;
+  std::ifstream filestream(LinuxParser::kProcDirectory + std::to_string(pid) + LinuxParser::kStatFilename);
+  if (filestream.is_open()) {
+    string line;
+    std::getline(filestream, line);
+    std::istringstream linestream(line);
+    string tempVal;
+    int index = 0;
+    while(linestream >> tempVal && index < 18){
+      values.push_back(tempVal);
+      index++;
+    }
+  }
+  return stol(values[13]) + stol(values[14]) + stol(values[15]) + stol(values[16]);
+}
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() {
+  return 0;
+}
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() {
+  return 0;
+}
 
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
@@ -291,10 +309,10 @@ long LinuxParser::UpTime(int pid) {
       linestream >> value;
     }
   }
-  uptime = std::stol(value)/sysconf(_SC_CLK_TCK);
+  uptime = UpTime() - std::stol(value)/sysconf(_SC_CLK_TCK);
   return uptime;
 }
-
+/*
 float LinuxParser::CpuUtililization(int pid) {
   string line;
   const string pidStr = std::to_string(pid);
@@ -316,8 +334,6 @@ float LinuxParser::CpuUtililization(int pid) {
   }
   totalTime = totalTime/sysconf(_SC_CLK_TCK);
   float seconds = LinuxParser::UpTime() - (stol(val[21])/sysconf(_SC_CLK_TCK));
-  //std::cout << "Uptime: " << uptime << std::endl;
-//  float divide = totalTime / LinuxParser::UpTime();
-  return 100.0 * (totalTime / seconds);
-  //return CpuUtilization_;
+  return (totalTime / seconds);
 }
+*/
