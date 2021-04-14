@@ -22,6 +22,8 @@ public:
 
   // TODO: Define any necessary private members
 private:
+  std::string kernel_;
+  std::string operating_system_;
   Processor cpu_;
   Memory    ram_;
   std::vector<Process> processes_ = {};
