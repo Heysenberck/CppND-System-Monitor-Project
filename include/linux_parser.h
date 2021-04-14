@@ -50,7 +50,6 @@ long IdleJiffies();
 
 // Processes
 std::string Command(int pid);
-float CpuUtililization(int pid);
 std::string Ram(int pid);
 std::string Uid(int pid);
 std::unordered_map<int, std::string> UserIdMap();
