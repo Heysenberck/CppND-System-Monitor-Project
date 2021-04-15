@@ -3,7 +3,6 @@
 #include <set>
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include <iostream>
 
 #include "process.h"
@@ -15,7 +14,6 @@ using std::set;
 using std::size_t;
 using std::string;
 using std::vector;
-using std::unordered_map;
 
 void System::Update() {
   ram_.Update();
@@ -25,25 +23,17 @@ Processor& System::Cpu() {
   return cpu_;
 }
 
-bool sortByCpuUtilization(const Process &a, const Process &b) {
-  return a < b;
-}
-
 vector<Process>& System::Processes() {
   processes_.clear();
-  unordered_map<int, string> userMap = LinuxParser::UserIdMap();
   std::vector<int> pids = LinuxParser::Pids();
-  for(int id : pids) {
+  for( int id : pids ) {
     Process process;
     process.Pid(id);
     process.Command(LinuxParser::Command(id));
-    string uid = LinuxParser::User(id);
-    string usr = userMap[std::stoi(uid)];
     process.Ram(LinuxParser::Ram(id));
-    process.User(usr);
+    process.User(LinuxParser::User(id));
     process.UpTime(LinuxParser::UpTime(id));
-    float util = 0.f;
-    process.CpuUtilization(util/*LinuxParser::CpuUtililization(id)*/);
+    process.CpuUtilization(LinuxParser::ActiveJiffies(id));
     processes_.push_back(process);
   } 
   std::sort(processes_.begin(), processes_.end());
