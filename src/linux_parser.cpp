@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <unordered_map>
 
 #include <unistd.h> // header for sysconf
 
@@ -13,7 +12,6 @@ using std::stof;
 using std::string;
 using std::to_string;
 using std::vector;
-using std::unordered_map;
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -204,8 +202,11 @@ string LinuxParser::Command(int pid) {
   return line; 
 }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
+/**
+ * Function returns the size of memory with the process with pid.
+ * @param[in]  pid - process identifier
+ * @param[out] memory size in MB
+*/
 string LinuxParser::Ram(int pid) {
   string line;
   string key;
@@ -226,31 +227,10 @@ string LinuxParser::Ram(int pid) {
 }
 
 /**
- * Function returns the uid of the process with pid.
+ * Function returns the uptime in seconds of the process with pid.
  * @param[in]  pid - process identifier
  * @param[out] uid
 */
-string LinuxParser::Uid(int pid) { 
-  string line;
-  string key;
-  string uid;
-
-  const string pidStr = std::to_string(pid);
-  std::ifstream filestream(kProcDirectory + pidStr + kStatusFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
-      linestream >> key >> uid;
-      if (key == "Uid:") {
-        return uid;
-      }
-    }
-  }
-  return "Uid not found";
-}
-
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int pid) {
   string line;
   string key;
@@ -263,31 +243,24 @@ string LinuxParser::User(int pid) {
       std::istringstream linestream(line);
       linestream >> key >> uid;
       if (key == "Uid:") {
-        return uid;
+        string name;
+        string password;
+        string user;
+        std::ifstream filestream(kPasswordPath);
+        if (filestream.is_open()) {
+          while (std::getline(filestream, line)) {
+            std::replace(line.begin(), line.end(), ':', ' ');
+            std::istringstream linestream(line);
+            linestream >> name >> password >> user;
+            if(user == uid) {
+              return name;
+            }  
+          }
+        }
       }
     }
   }
-  return "uidError";
-}
-
-unordered_map<int, string> LinuxParser::UserIdMap() {
-  string line;
-  string name;
-  string password;
-  string uid;
-
-  unordered_map<int, string> userToUid;
-
-  std::ifstream filestream(kPasswordPath);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream linestream(line);
-      linestream >> name >> password >> uid;
-      userToUid[std::stoi(uid)] = name;
-    }
-  }
-  return userToUid;
+  return "no user found";
 }
 
 /**
@@ -312,28 +285,3 @@ long LinuxParser::UpTime(int pid) {
   uptime = UpTime() - std::stol(value)/sysconf(_SC_CLK_TCK);
   return uptime;
 }
-/*
-float LinuxParser::CpuUtililization(int pid) {
-  string line;
-  const string pidStr = std::to_string(pid);
-  vector<string> val;  // [14=utime, 15=stime= 16=cutime, 17=cstime]
-  float totalTime = 0.f;
-  std::ifstream filestream(LinuxParser::kProcDirectory + pidStr + LinuxParser::kStatFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      for (int i = 0; i < 22; i++) {
-        std::istringstream linestream(line);
-        string tempVal;
-        linestream >> tempVal;
-        val.push_back(tempVal);
-      }
-    }
-  }
-  for (int i = 14; i < 18; i++) {
-    totalTime += stol(val[i]);
-  }
-  totalTime = totalTime/sysconf(_SC_CLK_TCK);
-  float seconds = LinuxParser::UpTime() - (stol(val[21])/sysconf(_SC_CLK_TCK));
-  return (totalTime / seconds);
-}
-*/
