@@ -14,7 +14,7 @@ public:
   std::string User() const;                // TODO: See src/process.cpp
   void Command(const std::string &cmd);
   std::string Command() const;
-  void CpuUtilization(float utilization);
+  void CpuUtilization(long total_time);
   float CpuUtilization() const;
   void Ram(const std::string &mem);
   std::string Ram() const;
