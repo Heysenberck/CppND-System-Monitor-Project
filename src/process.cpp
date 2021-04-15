@@ -19,12 +19,10 @@ int Process::Pid() const {
   return pid_;
 }
 
-void Process::CpuUtilization(float utilization) {
-  long total_time = LinuxParser::ActiveJiffies(pid_);
+void Process::CpuUtilization( long total_time ) {
   long seconds    = UpTime();
-  float total_time_seconds = total_time / sysconf(_SC_CLK_TCK);
-  utilization     = total_time_seconds / seconds;
-  cpuUtilization_ = utilization;
+  float total_time_secs = total_time / sysconf(_SC_CLK_TCK);
+  cpuUtilization_ = total_time_secs / seconds;
 }
 
 float Process::CpuUtilization() const {
