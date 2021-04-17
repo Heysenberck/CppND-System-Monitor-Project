@@ -132,7 +132,6 @@ long LinuxParser::Jiffies() {
 
 long LinuxParser::ActiveJiffies(int pid) {
   vector<string> values;  // [14=utime, 15=stime= 16=cutime, 17=cstime]
-  long totalTime = 0;
   std::ifstream filestream(LinuxParser::kProcDirectory + std::to_string(pid) + LinuxParser::kStatFilename);
   if (filestream.is_open()) {
     string line;
