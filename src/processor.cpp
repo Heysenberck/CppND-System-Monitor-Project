@@ -24,8 +24,6 @@ float Processor::Utilization() {
   float irq        = std::stoi(cpuTimeUnits[CPUStates::kIRQ_]);
   float softirq    = std::stoi(cpuTimeUnits[CPUStates::kSoftIRQ_]);
   float steal      = std::stoi(cpuTimeUnits[CPUStates::kSteal_]);
-  float guest      = std::stoi(cpuTimeUnits[CPUStates::kGuest_]);
-  float guest_nice = std::stoi(cpuTimeUnits[CPUStates::kGuestNice_]);
 
   prevIdle_ = currIdle_;
   currIdle_ = idle + iowait;
