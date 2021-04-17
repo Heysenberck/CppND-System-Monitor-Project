@@ -15,10 +15,6 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-void System::Update() {
-  ram_.Update();
-}
-
 Processor& System::Cpu() {
   return cpu_;
 }
