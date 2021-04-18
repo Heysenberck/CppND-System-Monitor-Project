@@ -58,7 +58,7 @@ int System::RunningProcesses() {
   return LinuxParser::RunningProcesses();
 }
 
-int System::TotalProcesses() { 
+long System::TotalProcesses() { 
   return LinuxParser::TotalProcesses(); 
 }
 
