@@ -22,7 +22,7 @@ const std::string kPasswordPath{"/etc/passwd"};
 float MemoryUtilization();
 long UpTime();
 std::vector<int> Pids();
-int TotalProcesses();
+long TotalProcesses();
 int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
@@ -42,10 +42,7 @@ enum CPUStates {
 };
 
 std::vector<std::string> CpuUtilization();
-long Jiffies();
-long ActiveJiffies();
 long ActiveJiffies(int pid);
-long IdleJiffies();
 
 // Processes
 std::string Command(int pid);
